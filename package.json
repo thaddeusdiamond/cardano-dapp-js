@@ -4,6 +4,7 @@
   "description": "A library that enables websites to quickly become dApps using Javascript code",
   "main": "src/index.js",
   "scripts": {
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +23,11 @@
   "license": "Apache-2.0",
   "dependencies": {
     "toastify-js": "^1.11.2"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   },
   "bugs": {
     "url": "https://github.com/thaddeusdiamond/cardano-dapp-js/issues"
