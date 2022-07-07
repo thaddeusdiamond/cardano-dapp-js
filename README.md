@@ -63,8 +63,12 @@ cardanoDApp.getConnectedWallet().then(wallet => {
 The dropdown menu created by the initialization of the CardanoDApp facilitates unique styling through HTML/CSS identifiers.  A simple CSS stylesheet for testing can be found at [cardano-wallet-picker.css](./src/css/cardano-wallet-picker.css) and can be included as:
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.3/dist/cardano-wallet-picker.css" rel="stylesheet" integrity="sha384-jeqm08LTVeNbS97UWy4EXaCioonM70aAFwSpoQITuPKgc53EI0+XfxoG+0hwMLqj" crossorigin="anonymous" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.4/dist/cardano-wallet-picker.css" rel="stylesheet" integrity="sha384-jeqm08LTVeNbS97UWy4EXaCioonM70aAFwSpoQITuPKgc53EI0+XfxoG+0hwMLqj" crossorigin="anonymous" type="text/css">
 ```
+
+## Examples
+
+Please see the examples provide in the [src/examples/](./src/examples/) directory.
 
 ## Installation
 While this code can be built directly into Javascript (using a tool like [Webpack](https://webpack.js.org/guides/getting-started/)), we recommend building your HTML5 webapp using [npm](https://npmjs.org/).  Then, you can install this package using:
@@ -90,9 +94,9 @@ When you build your web application, you will be using a locally symlinked versi
 
 ### Static Javascript Linkage
 
-A compiled version of this library is generated with each release using webpack.  To link it directly from your HTML code, please use:
+A compiled version of this library is generated with each release using webpack.  To link it directly from your HTML code, please use (and optionally include the integrity attribute):
 ```html
-<script src="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.3/dist/cardano-dapp-js.js" rel="stylesheet" integrity="sha384-qeqR+lcacsPuasChrX5ocn0eWqyIFxdkiejtZadsHZEly9O+9iRxoqUiCuSuuVml" crossorigin="anonymous" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.4/dist/cardano-dapp-js.js" crossorigin="anonymous" type="text/javascript"></script>
 ```
 
 ### Compatibility

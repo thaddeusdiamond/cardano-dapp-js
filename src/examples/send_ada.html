@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.3/dist/cardano-wallet-picker.css" rel="stylesheet" integrity="sha384-jeqm08LTVeNbS97UWy4EXaCioonM70aAFwSpoQITuPKgc53EI0+XfxoG+0hwMLqj" crossorigin="anonymous" type="text/css">
+  </head>
+
+  <body>
+
+    <div id="wallet-container"></div>
+
+    <input id="address" type="text" placeholder="Type Address Here..."/>
+    <input id="amount" type="number" placeholder="Amount in Lovelace"/>
+    <input id="send" type="submit"/>
+
+  </body>
+
+  <script src="../../dist/cardano-dapp-js.js" crossorigin="anonymous" type="text/javascript"></script>
+  <script type="module">
+    const CardanoDAppJsModule = await CardanoDAppJs;
+    const cardanoDApp = new CardanoDAppJsModule.CardanoDApp('wallet-container');
+    const lucid = await CardanoDAppJsModule.Lucid.new(
+      new CardanoDAppJsModule.Blockfrost("https://cardano-testnet.blockfrost.io/api/v0", "<PROJECT_KEY>"),
+      "Testnet"
+    );
+
+    async function sendMoneyToPayee(e) {
+      e.preventDefault();
+
+      var payor = await cardanoDApp.getConnectedWallet();
+      lucid.selectWallet(payor);
+
+      var payee = document.querySelector('#address').value;
+      var amount = parseInt(document.querySelector('#amount').value);
+
+      var txn = await lucid.newTx()
+                           .payToAddress(payee, {lovelace: amount})
+                           .complete();
+      var signedTx = await txn.sign().complete();
+      var txHash = await signedTx.submit();
+
+      alert(`Successfully submitted ${txHash}!`);
+    }
+
+    document.querySelector('#send').addEventListener('click', async e => sendMoneyToPayee(e));
+  </script>
