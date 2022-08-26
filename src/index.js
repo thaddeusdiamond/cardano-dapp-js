@@ -95,6 +95,10 @@ export class CardanoDApp {
             text: `Successfully connected wallet ${address}!`,
             duration: 3000
         }).showToast();
+        window.postMessage({
+          type: "CARDANO_DAPP_JS_CONNECT",
+          wallet: { provider: walletName, address: address }
+        }, "*");
       })
     ).catch(CardanoDApp.#toastWalletError);
   }

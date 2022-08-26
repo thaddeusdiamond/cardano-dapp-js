@@ -58,12 +58,28 @@ cardanoDApp.getConnectedWallet().then(wallet => {
 });
 ```
 
+After a successful connection is made by the user a message of type `CARDANO_DAPP_JS_CONNECT` is posted to the window object.  For third-party integrations, simply receive this message into your JavaScript code and make use of the `wallet` object that is passed in:
+
+```js
+window.addEventListener("message", async event => {
+  // We only accept messages from ourselves
+  if (event.source != window || !event.data.type) {
+    return;
+  }
+
+  try {
+    switch (event.data.type) {
+      case "CARDANO_DAPP_JS_CONNECT":
+        await doSomethingWith(event.data.wallet);
+        ...
+```
+
 ### Styling
 
 The dropdown menu created by the initialization of the CardanoDApp facilitates unique styling through HTML/CSS identifiers.  A simple CSS stylesheet for testing can be found at [cardano-wallet-picker.css](./src/css/cardano-wallet-picker.css) and can be included as:
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.4/dist/cardano-wallet-picker.css" rel="stylesheet" integrity="sha384-jeqm08LTVeNbS97UWy4EXaCioonM70aAFwSpoQITuPKgc53EI0+XfxoG+0hwMLqj" crossorigin="anonymous" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.5/dist/cardano-wallet-picker.css" rel="stylesheet" integrity="<COMPUTED_INTEGRITY>" crossorigin="anonymous" type="text/css">
 ```
 
 ## Examples
@@ -96,7 +112,7 @@ When you build your web application, you will be using a locally symlinked versi
 
 A compiled version of this library is generated with each release using webpack.  To link it directly from your HTML code, please use (and optionally include the integrity attribute):
 ```html
-<script src="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.4/dist/cardano-dapp-js.js" crossorigin="anonymous" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/cardano-dapp-js@1.0.5/dist/cardano-dapp-js.js" crossorigin="anonymous" type="text/javascript"></script>
 ```
 
 ### Compatibility
