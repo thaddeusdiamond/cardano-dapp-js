@@ -1,6 +1,6 @@
 {
   "name": "cardano-dapp-js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A library that enables websites to quickly become dApps using Javascript code",
   "main": "src/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "buffer": "^6.0.3",
-    "lucid-cardano": "^0.3.5",
+    "lucid-cardano": "^0.7.8",
     "toastify-js": "^1.11.2"
   },
   "devDependencies": {

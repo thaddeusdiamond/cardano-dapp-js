@@ -1,5 +1,7 @@
-import {Lucid, Blockfrost} from "lucid-cardano";
+import {Lucid, Blockfrost, C as LCore} from 'lucid-cardano';
 import Toastify from 'toastify-js';
+
+import {coreToUtxo, fromHex} from 'lucid-cardano';
 
 export {Lucid, Blockfrost};
 
@@ -114,6 +116,34 @@ export class CardanoDApp {
       throw 'No wallet connected to enable';
     }
     return CardanoDApp.#enableWallet(this.selectedWallet);
+  }
+
+  async numPolicyAssets(policy) {
+    const policyAssets = {};
+    const currentWallet = await this.getConnectedWallet();
+    const utxos = await currentWallet.getUtxos();
+    for (const utxoStr of utxos) {
+      const utxoBytes = fromHex(utxoStr);
+      const coreUtxo = LCore.TransactionUnspentOutput.from_bytes(utxoBytes);
+      const utxo = coreToUtxo(coreUtxo)
+      const assets = utxo.assets;
+      for (const asset in assets) {
+        if (asset.startsWith(policy)) {
+          policyAssets[asset] = assets[asset];
+        }
+      }
+    }
+    return Object.values(policyAssets).reduce((acc, amount) => acc + amount, 0n);
+  }
+
+  async walletMeetsTokenGate(tokenGateMap) {
+    for (const policy in tokenGateMap) {
+      const numPolicyAssets = await this.numPolicyAssets(policy);
+      if (numPolicyAssets >= tokenGateMap[policy]) {
+        return true;
+      }
+    }
+    return false;
   }
 
   isWalletConnected() {
