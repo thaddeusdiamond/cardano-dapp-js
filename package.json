@@ -1,6 +1,6 @@
 {
   "name": "cardano-dapp-js",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A library that enables websites to quickly become dApps using Javascript code",
   "main": "src/index.js",
   "scripts": {

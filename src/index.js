@@ -20,6 +20,10 @@ export class CardanoDApp {
       cip30name: 'gerowallet',
       img: 'https://gerowallet.io/assets/img/logo2.ico'
     },
+    lace: {
+      cip30name: 'lace',
+      img: 'https://www.lace.io/favicon-32x32.png'
+    },
     nami: {
       cip30name: 'nami',
       img: 'https://namiwallet.io/favicon-32x32.png'
@@ -27,6 +31,10 @@ export class CardanoDApp {
     typhon: {
       cip30name: 'typhoncip30',
       img: 'https://typhonwallet.io/assets/typhon.svg',
+    },
+    vespr: {
+      cip30name: 'vespr',
+      img: 'https://vespr.xyz/favicon.png'
     },
     yoroi: {
       cip30name: 'yoroi',
