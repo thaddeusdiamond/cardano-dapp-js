@@ -40,7 +40,23 @@ Then, in a script block use JavaScript to initialize the wallet container and wi
 var cardanoDApp = new CardanoDApp('wallet-container');
 ```
 
-The wallet returned from calls to this class conforms to [CIP-0030](https://developers.cardano.org/docs/governance/cardano-improvement-proposals/cip-0030/).  Sample usage could be:
+The wallet returned from calls to this class conforms to [CIP-0030](https://developers.cardano.org/docs/governance/cardano-improvement-proposals/cip-0030/).  In addition, we optionally support the [WalletConnect](https://walletconnect.com) protocol for Cardano wallets.  To enable WalletConnect support in your dApp you need to include additional information:
+
+```js
+var cardanoDApp = new CardanoDApp('wallet-container', {
+  projectId: '0123456789abcdeffedcba9876543210',
+  relayerRegion: 'wss://relay.walletconnect.com',
+  metadata: {
+    description: 'Your dApp description goes here',
+    name: 'Your dApp',
+    icons: ['https://www.yourdapp.com/favicon.ico'],
+    url: 'https://yourdapp.com/'
+  },
+  autoconnect: false
+});
+```
+
+Sample usage could be:
 
 ```js
 if (!cardanoDApp.isWalletConnected()) {
@@ -127,4 +143,4 @@ TBA
 
 ## Documentation
 
-TBA
+All documentation relevant to this project is contained in this README.  For community support, please visit the [WildTangz Discord](https://discord.gg/wildtangz).

@@ -3,9 +3,21 @@ import Toastify from 'toastify-js';
 
 import {coreToUtxo, fromHex} from 'lucid-cardano';
 
+import {
+  init as walletConnectInit,
+  connect as walletConnect,
+  getActiveConnector as getActiveWalletConnectConnector,
+  cardanoMainnetWalletConnect,
+  WalletConnectConnector
+} from '@dcspark/adalib';
+
 export {Lucid, Blockfrost};
 
 export class CardanoDApp {
+
+  static #CARDANO_CHAINS = [
+    cardanoMainnetWalletConnect()
+  ];
 
   static #SUPPORTED_WALLETS = {
     eternl: {
@@ -36,11 +48,17 @@ export class CardanoDApp {
       cip30name: 'vespr',
       img: 'https://vespr.xyz/favicon.png'
     },
+    WalletConnect: {
+      cip30name: 'WalletConnect',
+      img: 'https://cloud.walletconnect.com/favicon.ico'
+    },
     yoroi: {
       cip30name: 'yoroi',
       img: 'https://yoroi-wallet.com/assets/favicon.png'
     }
   }
+
+  static #TIMEOUT_MS = 1000;
 
   static #toastWalletError(error) {
     var message = error.toString();
@@ -59,14 +77,43 @@ export class CardanoDApp {
     return true;
   }
 
-  static #enableWallet(walletName) {
+  static async #enableWallet(walletName) {
+    if (walletName === 'WalletConnect') {
+      const connector = getActiveWalletConnectConnector();
+      const isStillConnected = await connector.isConnected(CardanoDApp.#TIMEOUT_MS);
+      if (!isStillConnected) {
+        await walletConnect();
+      }
+      return connector.getConnectorAPI();
+    }
     const cip30name = CardanoDApp.#SUPPORTED_WALLETS[walletName].cip30name;
     return window.cardano[cip30name].enable();
   }
 
-  constructor(containerId) {
+  static #configureWalletConnect(walletConnectInfo) {
+    walletConnectInit(() => {
+      return {
+        connectors: [
+          new WalletConnectConnector({
+            relayerRegion: walletConnectInfo.relayerRegion,
+            metadata: walletConnectInfo.metadata,
+            autoconnect: walletConnectInfo.autoconnect,
+            qrcode: true
+          })
+        ],
+        connectorName: WalletConnectConnector.connectorName(),
+        chosenChain: cardanoMainnetWalletConnect()
+      }
+    }, walletConnectInfo.projectId);
+  }
+
+  constructor(containerId, walletConnectInfo) {
     this.containerId = containerId;
     this.#buildDropdownDom();
+    if (walletConnectInfo !== undefined) {
+      CardanoDApp.#configureWalletConnect(walletConnectInfo);
+      window.cardano.WalletConnect = walletConnectInfo;
+    }
     this.#configureDropdownListeners();
   }
 
@@ -83,7 +130,10 @@ export class CardanoDApp {
 
   #configureDropdownListeners() {
     for (const wallet in CardanoDApp.#SUPPORTED_WALLETS) {
-      document.querySelector(`#${this.containerId}-${wallet}`).addEventListener("click", e => this.connectWallet(e, wallet));
+      document.querySelector(`#${this.containerId}-${wallet}`).addEventListener("click", async e => {
+        e && e.preventDefault();
+        await this.connectWallet(wallet);
+      });
     }
   }
 
@@ -91,26 +141,27 @@ export class CardanoDApp {
     return `${this.containerId}-header`;
   }
 
-  connectWallet(e, walletName) {
-    e.preventDefault();
+  async connectWallet(walletName) {
     if (!CardanoDApp.#isWalletSupported(walletName)) {
       return;
     }
 
-    CardanoDApp.#enableWallet(walletName).then(wallet =>
-      wallet.getChangeAddress().then(address => {
-        this.selectedWallet = walletName;
-        this.#displayWallet();
-        Toastify({
-            text: `Successfully connected wallet ${address}!`,
-            duration: 3000
-        }).showToast();
-        window.postMessage({
-          type: "CARDANO_DAPP_JS_CONNECT",
-          wallet: { provider: walletName, address: address }
-        }, "*");
-      })
-    ).catch(CardanoDApp.#toastWalletError);
+    try {
+      const wallet = await CardanoDApp.#enableWallet(walletName);
+      const address = await wallet.getChangeAddress();
+      this.selectedWallet = walletName;
+      this.#displayWallet();
+      Toastify({
+          text: `Successfully connected wallet ${address}!`,
+          duration: 3000
+      }).showToast();
+      window.postMessage({
+        type: "CARDANO_DAPP_JS_CONNECT",
+        wallet: { provider: walletName, address: address }
+      }, "*");
+    } catch (err) {
+      CardanoDApp.#toastWalletError(err);
+    }
   }
 
   #displayWallet() {
