@@ -19,7 +19,7 @@ export class CardanoDApp {
     cardanoMainnetWalletConnect()
   ];
 
-  static #SUPPORTED_WALLETS = {
+  static SUPPORTED_WALLETS = {
     eternl: {
       cip30name: 'eternl',
       img: 'https://ccvault.io/icons/favicon-128x128.png'
@@ -69,7 +69,7 @@ export class CardanoDApp {
   }
 
   static #isWalletSupported(walletName) {
-    const walletCip30Name = CardanoDApp.#SUPPORTED_WALLETS[walletName].cip30name;
+    const walletCip30Name = CardanoDApp.SUPPORTED_WALLETS[walletName].cip30name;
     if (!(("cardano" in window) && (walletCip30Name in window.cardano))) {
       this.#toastWalletError(`Wallet '${walletName}' not integrated in your browser`);
       return false;
@@ -86,7 +86,7 @@ export class CardanoDApp {
       }
       return connector.getConnectorAPI();
     }
-    const cip30name = CardanoDApp.#SUPPORTED_WALLETS[walletName].cip30name;
+    const cip30name = CardanoDApp.SUPPORTED_WALLETS[walletName].cip30name;
     return window.cardano[cip30name].enable();
   }
 
@@ -120,8 +120,8 @@ export class CardanoDApp {
   #buildDropdownDom() {
     var dropdownHtml = `<ul><li><a id="${this.#getBannerEl()}" class="text-reset bordered">Connect Wallet&nbsp;&#9660;</a>`;
     dropdownHtml += '<ul class="dropdown">';
-    for (var wallet in CardanoDApp.#SUPPORTED_WALLETS) {
-      var img = CardanoDApp.#SUPPORTED_WALLETS[wallet].img;
+    for (var wallet in CardanoDApp.SUPPORTED_WALLETS) {
+      var img = CardanoDApp.SUPPORTED_WALLETS[wallet].img;
       dropdownHtml += `<li class="bordered"><a id="${this.containerId}-${wallet}"><img src="${img}" width=20 height=20 />&nbsp;&nbsp;${wallet}</a></li>`;
     }
     dropdownHtml += '</ul></li></ul>';
@@ -129,7 +129,7 @@ export class CardanoDApp {
   }
 
   #configureDropdownListeners() {
-    for (const wallet in CardanoDApp.#SUPPORTED_WALLETS) {
+    for (const wallet in CardanoDApp.SUPPORTED_WALLETS) {
       document.querySelector(`#${this.containerId}-${wallet}`).addEventListener("click", async e => {
         e && e.preventDefault();
         await this.connectWallet(wallet);
