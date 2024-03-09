@@ -20,6 +20,10 @@ export class CardanoDApp {
   ];
 
   static SUPPORTED_WALLETS = {
+    begin: {
+      cip30name: 'begin',
+      img: 'https://begin.is/favicon/favicon.ico'
+    },
     eternl: {
       cip30name: 'eternl',
       img: 'https://ccvault.io/icons/favicon-128x128.png'
